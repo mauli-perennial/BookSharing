@@ -78,4 +78,17 @@ checkIfUserExist(String email) {
             throw new UserHandlingException("password format wrong");
         }
     }
+
+    public static String maskLeft(String password, int length, char mask) {
+        if (length <= 0) {
+            return password;
+        }
+        length = Math.min(length, password.length());
+        StringBuilder sb = new StringBuilder();
+        for (int index = 0; index < length; index++) {
+            sb.append(mask);
+        }
+        sb.append(password.substring(length));
+        return sb.toString();
+    }
 }

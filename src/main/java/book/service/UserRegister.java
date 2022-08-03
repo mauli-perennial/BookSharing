@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Scanner;
 
-import static book.service.BookService.createNewUser;
 import static validation.ValidationForBookAndUser.*;
 
 public class UserRegister {
@@ -33,5 +32,18 @@ public class UserRegister {
         System.out.println("Enter the User information");
         String userInformation = scanner.next();
         return createNewUser(userid, name, lastName, mobile, userInformation,emailAddress, passwordRegister);
+    }
+
+    public static User createNewUser(int userid, String name, String lastName, int mobile, String userInformation, String emailAddress, String passwordLogin) {
+        User user = new User();
+        user.setUserId(userid);
+        user.setFirstName(name);
+        user.setLastName(lastName);
+        user.setMobileNumber(mobile);
+        user.setUserInformation(userInformation);
+        user.setEmail(emailAddress);
+        user.setPassword(passwordLogin);
+        System.out.println(user);
+        return user;
     }
 }

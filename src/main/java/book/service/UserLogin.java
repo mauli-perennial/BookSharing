@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
-import static book.service.BookService.maskLeft;
+import static validation.ValidationForBookAndUser.maskLeft;
 
 public class UserLogin {
     public String userLogin(Map<String,User> users,Map<String,String> request) throws UserHandlingException {
