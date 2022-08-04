@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 import static validation.ValidationForBookAndUser.convertDate;
 public class BookApp {
-    public void bookApp(User user,Map<Integer,OwnerDTO> owners, Map<String,String> request,Map<String,List<Book>> bookStore){
+    public void bookAppDashboard(User user, Map<Integer,OwnerDTO> owners, Map<String,String> request, Map<String,List<Book>> bookStore){
         Scanner scanner = new Scanner(System.in);
         Map<Integer,OwnerDTO> bookShare = new HashMap<>();
         boolean logout = false;
@@ -116,10 +116,7 @@ public class BookApp {
                          System.out.println(" no such books to return");
                      }
                 } else if(choice == 7) {
-                     logout = true;
-                }else{
-                     System.out.println("Invalid choice");
-                     continue;
+                    logout = true;
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -128,8 +125,7 @@ public class BookApp {
     }
 
 
-
-
+    
     public Book addBook(String name) throws ParseException {
         Scanner scanner = new Scanner(System.in);
         Random random = new Random();

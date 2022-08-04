@@ -43,7 +43,7 @@ public class UserDashboard {
                         }
                         userLogin = users.get(userEmail);
                         BookApp app = new BookApp();
-                        app.bookApp(userLogin,owner,request,bookStore);
+                        app.bookAppDashboard(userLogin,owner,request,bookStore);
                     } else if (option.equalsIgnoreCase("R")) {
                         UserRegister reg = new UserRegister();
                         User registeredUser= reg.userRegistration(users);
@@ -55,7 +55,9 @@ public class UserDashboard {
                             if (decide.equalsIgnoreCase("y")) {
                                 userLogin = users.get(registeredUser.getEmail());
                                 BookApp app = new BookApp();
-                                app.bookApp(userLogin,owner,request,bookStore);
+                                app.bookAppDashboard(userLogin,owner,request,bookStore);
+                            }else{
+                                continue;
                             }
                         }
                     }else if(option.equalsIgnoreCase("E")) {
