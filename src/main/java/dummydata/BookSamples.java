@@ -18,8 +18,7 @@ public class BookSamples {
             Set<String> keyWord = new HashSet<>(Arrays.asList("sad", "happy"));
             list.add(new Book(1, "rama", authors, convertDate("12-02-2022"), keyWord, BookStatus.AVAILABLE.getName()));
         } catch (Exception e) {
-
-            System.out.println("error in the sample date of the books");
+            e.printStackTrace();
         }
         return list;
     }

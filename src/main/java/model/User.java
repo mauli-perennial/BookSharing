@@ -1,26 +1,24 @@
 package model;
 
-public class User {
-    private int userId;
-    private String firstName;
-    private String lastName;
-    private int mobileNumber;
-    private String userInformation;
-    private String email;
-    private String password;
+import java.util.Objects;
 
-    public User() {
+public final class User {
+    private final int userId;
+    private final  String firstName;
+    private final String lastName;
+    private  final int mobileNumber;
+    private  String bioData;
+    private final String email;
+    private final  String password;
 
-    }
 
-    public User(int userId, String firstName, String lastName, int mobileNumber, String userInformation, String email, String password) {
-        this.userId = userId;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.mobileNumber = mobileNumber;
-        this.userInformation = userInformation;
-        this.email = email;
-        this.password = password;
+    public User(UserBuilder builder) {
+        this.userId = builder.userId;
+        this.firstName = builder.firstName;
+        this.lastName = builder.lastName;
+        this.mobileNumber = builder.mobileNumber;
+        this.email = builder.email;
+        this.password = builder.password;
 
     }
 
@@ -42,8 +40,8 @@ public class User {
         return mobileNumber;
     }
 
-    public String getUserInformation() {
-        return userInformation;
+    public String getBioData() {
+        return bioData;
     }
 
     public String getEmail() {
@@ -54,6 +52,18 @@ public class User {
         return password;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof User)) return false;
+        User user = (User) o;
+        return getUserId() == user.getUserId() && getMobileNumber() == user.getMobileNumber() && Objects.equals(getFirstName(), user.getFirstName()) && Objects.equals(getLastName(), user.getLastName()) && Objects.equals(getBioData(), user.getBioData()) && Objects.equals(getEmail(), user.getEmail()) && Objects.equals(getPassword(), user.getPassword());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getUserId(), getFirstName(), getLastName(), getMobileNumber(), getBioData(), getEmail(), getPassword());
+    }
 
     @Override
     public String toString() {
@@ -62,9 +72,10 @@ public class User {
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", mobileNumber=" + mobileNumber +
-                ", userInformation='" + userInformation + '\'' +
+                ", biodata ='" + bioData + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 '}';
     }
+
 }

@@ -2,6 +2,7 @@ package model;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Objects;
 import java.util.Set;
 
 public class Book {
@@ -38,9 +39,6 @@ public class Book {
         return publishDate;
     }
 
-    public void setPublishDate(Date publishDate) {
-        this.publishDate = publishDate;
-    }
 
     public Set<String> getBookAuthor() {
         return bookAuthor;
@@ -62,7 +60,12 @@ public class Book {
     }
 
     public void setStatus(String status) {
-        this.status = status;
+        if(status.equalsIgnoreCase(BookStatus.AVAILABLE.getName())){
+            this.status = BookStatus.AVAILABLE.getName();
+        }else {
+            this.status = BookStatus.TAKEN.getName();
+        }
+
     }
 
     @Override

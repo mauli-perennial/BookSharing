@@ -2,6 +2,7 @@ package dummydata;
 
 import model.Book;
 import model.User;
+import model.UserBuilder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,7 +16,7 @@ public class BookOwner {
     private BookOwner(){
 
     }
-    public static final String email = "mauli.satav@perennialsys.com";
+    public static final String EMAIL = "mauli.satav@gmail.com";
     public static Map<Integer, User> getBookOwner() {
         Map<String, User> myUsers = userData(sampleReadyUser());
         Map<String, List<Book>> bookStore = BookSamples.dataBook(BookSamples.sampleReadyBook());
@@ -26,7 +27,7 @@ public class BookOwner {
             sortedBooks.addAll(book);
         }
         for (Book book : sortedBooks) {
-            bookOwner.put(book.getIsbn(), new User(myUsers.get(email).getUserId(), myUsers.get(email).getFirstName(), myUsers.get(email).getLastName(), myUsers.get(email).getMobileNumber(), " ", myUsers.get(email).getEmail(), " "));
+            bookOwner.put(book.getIsbn(), new User(new UserBuilder(myUsers.get(EMAIL).getUserId(),myUsers.get(EMAIL).getFirstName(),myUsers.get(EMAIL).getLastName(),myUsers.get(EMAIL).getMobileNumber(),myUsers.get(EMAIL).getEmail(),"")));
         }
         return bookOwner;
     }

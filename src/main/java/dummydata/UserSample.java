@@ -1,6 +1,7 @@
 package dummydata;
 
 import model.User;
+import model.UserBuilder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,9 +15,9 @@ public class UserSample {
     public static List<User> sampleReadyUser() {
         List<User> list = new ArrayList<>();
         try {
-            list.add(new User(1, "mauli", "satav", 1234, "I am mauli satav from solapur maharashtra", "mauli.satav@perennialsys.com", "Mahi@123"));
+            list.add(new User(new UserBuilder(1,"mauli","satav",21313,"mauli.satav@gmail.com","Mahi@123").bioData("SASAS")));
         } catch (Exception e) {
-            System.out.println("error in user sample date");
+          e.printStackTrace();
         }
         return list;
     }

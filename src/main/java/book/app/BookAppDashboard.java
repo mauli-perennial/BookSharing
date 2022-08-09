@@ -1,17 +1,25 @@
 package book.app;
 
-import exceptions.BookException;
+import exceptions.BookNotPresentException;
+import main.application.TestBookApp;
 import model.*;
 
 import java.util.*;
+import java.util.logging.Logger;
 
 
 public class BookAppDashboard {
+    private static final String AUTHOR = "author";
+
+    private static final String KEY = "key";
+    private static final String BOOK = "book";
+    public static final Logger log = Logger.getLogger(String.valueOf(TestBookApp.class));
+    static ResourceBundle bundle = ResourceBundle.getBundle("menu", Locale.CANADA_FRENCH);
     public void dashboard(User user, Map<Integer, User> owners, Map<String, String> request, Map<String, List<Book>> bookStore) {
         Map<Integer, User> bookShare = new HashMap<>();
         boolean logout = false;
         Scanner scanner = new Scanner(System.in);
-        BookService ser = new BookService();
+        BookService service = new BookService();
         while (!logout) {
 
             BookOperation.menu();
@@ -27,60 +35,59 @@ public class BookAppDashboard {
 
                         break;
                     case 2:
-                        System.out.println("Enter the Name of the Book for which you want the information of the Book");
-
+                        log.info(bundle.getString("bookName"));
                         String bookeyName = scanner.next();
-                        List<Book> books = ser.searchByValue(bookStore, bookeyName, "bybook");
+                        List<Book> books = service.searchByValue(bookStore, bookeyName, BOOK);
                         if(!books.isEmpty()) {
-                            System.out.println(books);
+                           log.info(books.toString());
                         }else {
-                            throw new BookException(" no books by this name");
+                            throw new BookNotPresentException(" no books by this name");
                         }
 
                         break;
                     case 3:
 
-                        System.out.println("Enter the name of the author");
+                        log.info("Enter the name of the author");
                         String authorName = scanner.next();
-                        List<Book> sr = ser.searchByValue(bookStore, authorName,"author");
-                        if (!sr.isEmpty()) {
-                            for (Book b : sr) {
-                                System.out.println(b);
+                        List<Book> list = service.searchByValue(bookStore, authorName,AUTHOR);
+                        if (!list.isEmpty()) {
+                            for (Book book : list) {
+                                log.info(book.toString());
                             }
                         } else {
-                            throw new BookException(" no such books");
+                            throw new BookNotPresentException(" no such books");
                         }
 
                         break;
                     case 4:
 
-                        System.out.println("Enter the name of the key");
+                        log.info("Enter the name of the key");
                         String key = scanner.next();
-                        List<Book> byKeyResult = ser.searchByValue(bookStore, key,"key");
+                        List<Book> byKeyResult = service.searchByValue(bookStore, key,KEY);
                         if (!byKeyResult.isEmpty()) {
-                            for (Book b : byKeyResult) {
-                                System.out.println(b);
+                            for (Book book : byKeyResult) {
+                                log.info(book.toString());
                             }
                         } else {
-                            throw new BookException("no book by key");
+                            throw new BookNotPresentException("no book by key");
                         }
                         break;
 
                     case 5:
 
                         if (BookOperation.requestBook(user, owners, request, bookStore, bookShare)) {
-                            System.out.println(" request sent successfully");
+                            log.info(bundle.getString("requestSent"));
                         } else {
-                            throw new BookException(" no such books");
+                            throw new BookNotPresentException(" no such books");
                         }
                         break;
 
                     case 6:
 
                         if (BookOperation.returnBook(request, bookStore, bookShare, owners, user)) {
-                            System.out.println(" book return successfull message sent to owner");
+                            log.info(bundle.getString("returnMessage"));
                         } else {
-                            throw new BookException(" error in retrun");
+                            throw new BookNotPresentException(" error in retrun");
                         }
                         break;
 
@@ -91,7 +98,7 @@ public class BookAppDashboard {
 
                     default:
 
-                        System.out.println(" Invalid Choice");
+                        log.info(" Invalid Choice");
                         break;
 
                 }

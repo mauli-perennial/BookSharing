@@ -1,14 +1,14 @@
 package user.app;
 
 import book.app.BookAppDashboard;
-import exceptions.UserException;
+import exceptions.EmailFormatException;
+import exceptions.DuplicateUserException;
+import main.application.TestBookApp;
 import model.Book;
 import model.User;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
+import java.util.logging.Logger;
 
 import static dummydata.BookOwner.getBookOwner;
 import static dummydata.BookSamples.dataBook;
@@ -17,7 +17,9 @@ import static dummydata.UserSample.sampleReadyUser;
 import static dummydata.UserSample.userData;
 
 public class UserDashboard {
-    public static void userDashboardRun() throws UserException {
+    public static final Logger log = Logger.getLogger(String.valueOf(TestBookApp.class));
+    static ResourceBundle bundle = ResourceBundle.getBundle("menu", Locale.CANADA_FRENCH);
+    public static void userDashboardRun() throws DuplicateUserException {
 
         boolean exit = false;
         Map<String, User> users = userData(sampleReadyUser());
@@ -28,60 +30,53 @@ public class UserDashboard {
         try (Scanner scanner = new Scanner(System.in)) {
 
             while (!exit) {
-
-                System.out.println("Please Choose the following options given below");
-                System.out.println("L :   Choose L for Login      R :    Choose R for Register ");
-                System.out.println("E :    choose E for  Exit ");
-
+                log.info("Please Choose the following options given below");
+                String menu = String.format("%s %n %s %n %s " , bundle.getString("login"),bundle.getString("register"),bundle.getString("logout"));
+                log.info(menu);
                 String option = scanner.next();
 
                 switch (option) {
 
                     case "L":
-
-                        UserLogin data = new UserLogin();
-                        String userEmail;
+                       log.info(bundle.getString("email"));
+                        String userEmail = scanner.next();
+                        log.info(bundle.getString("password"));
+                        String password = scanner.next();
                         try {
-                            userEmail = data.userLogin(users, request);
+                            userLogin = UserManager.userLogin(userEmail,password,request,users);
                         } catch (Exception e) {
                             continue;
                         }
-                        userLogin = users.get(userEmail);
                         BookAppDashboard app = new BookAppDashboard();
                         app.dashboard(userLogin, owner, request, bookStore);
                         break;
 
                     case "R":
 
-                        UserRegister reg = new UserRegister();
                         User registeredUser;
                         try {
-                            registeredUser = reg.userRegistration(users);
-                        } catch (UserException e) {
-                            throw new UserException(" user not registered");
-
-
+                            registeredUser = UserManager.userRegistration();
+                        }  catch (EmailFormatException e) {
+                            throw new RuntimeException(e);
                         }
-                        System.out.println("Congratulations you have successfully registered in System With UserId please keep this userId with you for further process " + registeredUser.getUserId());
+                        log.info(bundle.getString("success") + registeredUser.getUserId());
                         users.put(registeredUser.getEmail(), registeredUser);
-                        System.out.println("enter y");
+                        log.info("enter y");
                         String decide = scanner.next();
-                        if (users.containsKey(registeredUser.getEmail())) {
-                            if (decide.equalsIgnoreCase("y")) {
+                        if (users.containsKey(registeredUser.getEmail()) && decide.equalsIgnoreCase("y")) {
                                 userLogin = users.get(registeredUser.getEmail());
                                 BookAppDashboard appReg = new BookAppDashboard();
                                 appReg.dashboard(userLogin, owner, request, bookStore);
-                            }
                         }
                         break;
 
                     case "E":
-                        System.out.println(" exiting from app");
+                        log.info(bundle.getString("exits"));
                         exit = true;
                         break;
 
                     default:
-                        System.out.println(" please enter right option");
+                        log.info(" please enter right option");
                         break;
                 }
             }

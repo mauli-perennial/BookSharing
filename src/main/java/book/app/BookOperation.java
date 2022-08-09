@@ -1,10 +1,13 @@
 package book.app;
 
-import exceptions.BookException;
+import exceptions.BooKNameException;
+import main.application.TestBookApp;
 import model.*;
 
 import java.text.ParseException;
 import java.util.*;
+import java.util.logging.Logger;
+
 import static book_user_validator.ValidationForBookAndUser.convertDate;
 import static book_user_validator.ValidationForBookAndUser.validateBookName;
 
@@ -14,25 +17,25 @@ public class BookOperation {
     private BookOperation(){
 
     }
-    static void addBook(Map<String, List<Book>> bookStore, Map<Integer, User> owners, User user) throws ParseException, BookException {
-        System.out.println("Enter the Name of Book");
+    public static final Logger log = Logger.getLogger(String.valueOf(TestBookApp.class));
+    static ResourceBundle bundle = ResourceBundle.getBundle("menu", Locale.CANADA_FRENCH);
+    static void addBook(Map<String, List<Book>> bookStore, Map<Integer, User> owners, User user) throws ParseException, BooKNameException {
+        log.info(bundle.getString("bookName"));
         String name = scanner.next();
-        if (!validateBookName(name)) {
-            throw new BookException("wrong bookname format");
-        }
+        validateBookName(name);
         int isbn = random.nextInt();
-        System.out.println("Enter the number of authors you want to add");
+        log.info(bundle.getString("authorNumber"));
         int number = scanner.nextInt();
         Set<String> authors = new HashSet<>();
         for (int index = 1; index <= number; index++) {
             authors.add(scanner.next());
         }
         Date date = convertDate(java.time.LocalDate.now().toString());
-        System.out.println("Enter the two keywords");
+        log.info(bundle.getString("keywords"));
         Set<String> key = new HashSet<>();
         key.add(scanner.next());
         key.add(scanner.next());
-        Book myBook = new Book(isbn, name, authors, date, key, BookStatus.AVAILABLE.getName());
+        Book myBook = new Book(isbn, name, authors, date, key,BookStatus.AVAILABLE.getName());
         if (bookStore.containsKey(name)) {
             List<Book> oldList = bookStore.get(name);
             List<Book> newList = oldList;
@@ -43,14 +46,15 @@ public class BookOperation {
             book.add(myBook);
             bookStore.put(name, book);
         }
-        owners.put(myBook.getIsbn(), new User(user.getUserId(), user.getFirstName(), user.getLastName(), user.getMobileNumber(), " ", user.getEmail(), " "));
+        owners.put(myBook.getIsbn(), new User(new UserBuilder(user.getUserId(),user.getFirstName(),user.getLastName(),user.getMobileNumber(),user.getEmail(),"")));
     }
 
 
 
-    static boolean requestBook(User user, Map<Integer, User> owners, Map<String, String> request, Map<String, List<Book>> bookStore, Map<Integer, User> bookShare) {
-        System.out.println("Enter the name of the Book you want to request");
+    static boolean requestBook(User user, Map<Integer, User> owners, Map<String, String> request, Map<String, List<Book>> bookStore, Map<Integer, User> bookShare) throws BooKNameException {
+        log.info(bundle.getString("bookName"));
         String bookName = scanner.next();
+        validateBookName(bookName);
         BookService ser = new BookService();
         boolean isSuccess = false;
         if (bookStore.containsKey(bookName)) {
@@ -58,17 +62,18 @@ public class BookOperation {
             for (Book b : requestList) {
                 System.out.println(b);
             }
-            System.out.println("Enter the isbn number of book to request book to owner");
+            log.info(bundle.getString("isbn"));
             int isbn = scanner.nextInt();
             if (owners.containsKey(isbn) && !bookShare.containsKey(isbn) && ser.checkStatusToRequest(requestList, isbn).equalsIgnoreCase(BookStatus.AVAILABLE.getName())) {
-                System.out.println(" owner details   " + owners.get(isbn));
-                System.out.println("press r to request book to owner he will contact you by email for further process");
+                log.info(" owner details   " + owners.get(isbn));
+                log.info("press r to request book to owner he will contact you by email for further process");
                 String req = scanner.next();
                 if (req.equalsIgnoreCase("r")) {
                     isSuccess = true;
-                    request.put(owners.get(isbn).getEmail(), "Hi, I am " + user.getFirstName() + " " + user.getLastName() + " I need book from you and book isbn number is " + isbn + " please contact me on my number    " + user.getMobileNumber());
-                    ser.changeBookStatus(bookName, isbn, bookStore, BookStatus.TAKEN);
-                    bookShare.put(isbn, new User(user.getUserId(), user.getFirstName(), user.getLastName(), user.getMobileNumber(), "", user.getEmail(), ""));
+                    String message = String.format("Hi, I am  %s  %s I need book from you and book isbn number is %d  please contact me on my number %d",user.getFirstName(),user.getLastName(),isbn,user.getMobileNumber());
+                    request.put(owners.get(isbn).getEmail(),message);
+                    ser.changeBookStatus(bookName, isbn, bookStore,BookStatus.TAKEN.getName());
+                    bookShare.put(isbn, new User(new UserBuilder(user.getUserId(),user.getFirstName(),user.getLastName(),user.getMobileNumber(),user.getEmail(),"")));
                 }
             }
         }
@@ -78,30 +83,28 @@ public class BookOperation {
 
 
     static boolean returnBook(Map<String, String> request, Map<String, List<Book>> bookStore, Map<Integer, User> bookShare, Map<Integer, User> owners, User user) {
-        System.out.println("Enter the name of book you want to return");
+        log.info(bundle.getString("bookName"));
         String select = scanner.next();
         BookService ser = new BookService();
         boolean isSuccess = false;
         if (bookStore.containsKey(select)) {
-            System.out.println(" please enter the isbn number of your book");
+            log.info(bundle.getString("isbn"));
             int isbn = scanner.nextInt();
             if (bookShare.containsKey(isbn)) {
-                System.out.println("Hello   " + bookShare.get(isbn).getFirstName() + " Thanks for visiting we will mark book status returned");
-                ser.changeBookStatus(select, isbn, bookStore, BookStatus.AVAILABLE);
+                String message = String.format("Hello %s Thanks for visiting we will mark book status returned",bookShare.get(isbn).getFirstName());
+                log.info(message);
+                ser.changeBookStatus(select, isbn, bookStore,BookStatus.AVAILABLE.getName());
                 bookShare.remove(isbn);
                 isSuccess = true;
-                request.put(owners.get(isbn).getEmail(), "Hi    " + owners.get(isbn).getFirstName() + " ,   " + user.getFirstName() + " " + "Returned book with isbn  " + isbn);
+                String ownerMessage = String.format("Hi %s %s  Returned book with isbn %d",owners.get(isbn).getFirstName(),user.getFirstName(),isbn);
+                request.put(owners.get(isbn).getEmail(),ownerMessage);
             }
         }
         return isSuccess;
     }
 
-
     static void menu(){
-        System.out.println("Please choose the below Options");
-        System.out.println("1:     To add the new BOOK                        2:     To get book Information by Name of the Book ");
-        System.out.println("3:     To Get Book from the store by author       4:      To get Book Information by key word          ");
-        System.out.println("5:     To Request a book                          6:       To Return book.                           ");
-        System.out.println("7:     To exit");
+        String  menu = String.format("Please choose the below Options %n %s %n %s %n %s %n %s %n %s %n %s %n %s", bundle.getString("add"),bundle.getString("info"),bundle.getString("authors"),bundle.getString("keys"),bundle.getString("request"),bundle.getString("returnBook"),bundle.getString("exits"));
+        log.info(menu);
     }
 }

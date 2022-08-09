@@ -1,6 +1,8 @@
 package book_user_validator;
 
-import exceptions.UserException;
+import exceptions.BooKNameException;
+import exceptions.EmailFormatException;
+import exceptions.DuplicateUserException;
 import model.User;
 
 import java.text.ParseException;
@@ -14,8 +16,20 @@ import static dummydata.UserSample.userData;
 import static model.Book.sdf;
 
 public class ValidationForBookAndUser {
-    public static final String PASSWORD_PATTERN = "^[A-Za-z]\\w{5,29}$";
-    public static final Pattern pattern = Pattern.compile(PASSWORD_PATTERN);
+    private static final String PASSWORD_PATTERN = "^[A-Za-z]\\w{5,29}$";
+    private static final String BOOK_NAME = "^[a-zA-Z0-9]*$";
+
+    private static final String NAME = "^[a-zA-Z]*$";
+    private static final String EMAIL = "^[a-zA-Z0-9_+&*-]+(?:\\." +
+            "[a-zA-Z0-9_+&*-]+)*@" +
+            "(?:[a-zA-Z0-9-]+\\.)+[a-z" +
+            "A-Z]{2,7}$";
+    private static final Pattern pattern = Pattern.compile(PASSWORD_PATTERN);
+
+    private static final Pattern patternBook = Pattern.compile(BOOK_NAME);
+
+    private static final Pattern patternName = Pattern.compile(NAME);
+    private static final Pattern emailPattern = Pattern.compile(EMAIL);
 
     private ValidationForBookAndUser() {
         System.out.println("Inside validations");
@@ -27,10 +41,13 @@ public class ValidationForBookAndUser {
     }
 
 
-    public static boolean validateBookName(String name) {
+    public static boolean validateBookName(String name) throws BooKNameException {
         boolean isValid = false;
-        if ((name != null) && name.matches("^[a-zA-Z0-9]*$")) {
+        Matcher matcher = patternBook.matcher(name);
+        if (matcher.matches()) {
             isValid = true;
+        }else {
+            throw new BooKNameException("Invalid book name format");
         }
         return isValid;
     }
@@ -38,36 +55,28 @@ public class ValidationForBookAndUser {
 
     public static boolean validateName(String name) {
         boolean isValid = false;
-        if ((name != null) && name.matches("^[a-zA-Z]*$")) {
+        Matcher matcher = patternName.matcher(name);
+        if ((matcher.matches())) {
             isValid = true;
         }
         return isValid;
     }
 
 
-    public static boolean
-    checkIfUserExist(String email) {
+    public static void checkIfUserExist(String email) throws DuplicateUserException {
         Map<String, User> users = userData(sampleReadyUser());
         boolean isUserExists = false;
         for (User user : users.values()) {
             if (user.getEmail().equals(email)) {
-                isUserExists = true;
+                throw new DuplicateUserException(" Duplicate user found");
             }
         }
-        return isUserExists;
     }
 
 
     public static boolean isValidEmailAddress(String email) {
-        String regex = "^[a-zA-Z0-9_+&*-]+(?:\\." +
-                "[a-zA-Z0-9_+&*-]+)*@" +
-                "(?:[a-zA-Z0-9-]+\\.)+[a-z" +
-                "A-Z]{2,7}$";
-
-        Pattern pat = Pattern.compile(regex);
-        if (email == null)
-            return false;
-        return pat.matcher(email).matches();
+      Matcher matcher = emailPattern.matcher(email);
+        return matcher.matches();
     }
 
 
@@ -77,31 +86,17 @@ public class ValidationForBookAndUser {
     }
 
 
-    public static void checkEmail(String email) throws UserException {
+    public static void checkEmail(String email) throws EmailFormatException {
         if (!isValidEmailAddress(email)) {
-            throw new UserException("email format wrong");
+            throw new EmailFormatException("email format wrong");
         }
     }
 
 
-    public static void checkPassword(String password) throws UserException {
+    private static void checkPassword(String password) throws DuplicateUserException {
         if (isValid(password)) {
-            throw new UserException("password format wrong");
+            throw new DuplicateUserException("password format wrong");
         }
-    }
-
-
-    public static String maskLeft(String password, int length, char mask) {
-        if (length <= 0) {
-            return password;
-        }
-        length = Math.min(length, password.length());
-        StringBuilder sb = new StringBuilder();
-        for (int index = 0; index < length; index++) {
-            sb.append(mask);
-        }
-        sb.append(password.substring(length));
-        return sb.toString();
     }
 
 }

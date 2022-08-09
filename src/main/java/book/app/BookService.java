@@ -9,7 +9,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
  class BookService {
+private static final String AUTHOR = "author";
 
+private static final String KEY = "key";
 
      public List<Book> searchByValue(Map<String, List<Book>> bookStore, String value, String type) {
          List<Book> sortedBook = new ArrayList<>();
@@ -17,9 +19,9 @@ import java.util.stream.Collectors;
              sortedBook.addAll(book);
          }
          List<Book> byAuthor;
-         if (type.equals("author")) {
+         if (type.equals(AUTHOR)) {
              byAuthor = sortedBook.stream().filter(book -> book.getBookAuthor().stream().anyMatch((s -> s.contains(value)))).collect(Collectors.toList());
-         } else if (type.equals("key")) {
+         } else if (type.equals(KEY)) {
              byAuthor = sortedBook.stream().filter(key -> key.getKeyWords().stream().anyMatch((s -> s.contains(value)))).collect(Collectors.toList());
          } else {
              byAuthor = sortedBook.stream().filter(book -> book.getBookName().contains(value)).collect(Collectors.toList());
@@ -30,14 +32,14 @@ import java.util.stream.Collectors;
 
 
 
-    public void changeBookStatus(String name, int isbn, Map<String, List<Book>> bookStore, BookStatus status) {
+    public void changeBookStatus(String name, int isbn, Map<String, List<Book>> bookStore, String  status) {
         List<Book> booksByName = bookStore.get(name);
-        for (Book b : booksByName) {
-            if (b.getIsbn() == isbn) {
-                if (status.equals(BookStatus.TAKEN)) {
-                    b.setStatus(BookStatus.TAKEN.getName());
+        for (Book book : booksByName) {
+            if (book.getIsbn() == isbn) {
+                if (status.equals(BookStatus.TAKEN.getName())) {
+                    book.setStatus(status);
                 } else {
-                    b.setStatus(BookStatus.AVAILABLE.getName());
+                    book.setStatus(BookStatus.AVAILABLE.getName());
                 }
             }
         }
