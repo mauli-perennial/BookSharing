@@ -33,6 +33,7 @@ public class BookAppDashboard {
 
                         BookOperation.addBook(bookStore, owners, user);
 
+
                         break;
                     case 2:
                         log.info(bundle.getString("bookName"));
@@ -47,7 +48,7 @@ public class BookAppDashboard {
                         break;
                     case 3:
 
-                        log.info("Enter the name of the author");
+                        log.info(bundle.getString("authorName"));
                         String authorName = scanner.next();
                         List<Book> list = service.searchByValue(bookStore, authorName,AUTHOR);
                         if (!list.isEmpty()) {
@@ -61,7 +62,7 @@ public class BookAppDashboard {
                         break;
                     case 4:
 
-                        log.info("Enter the name of the key");
+                        log.info(bundle.getString("keyWord"));
                         String key = scanner.next();
                         List<Book> byKeyResult = service.searchByValue(bookStore, key,KEY);
                         if (!byKeyResult.isEmpty()) {
