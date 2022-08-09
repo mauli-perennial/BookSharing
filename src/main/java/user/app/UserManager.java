@@ -16,7 +16,7 @@ import static book_user_validator.ValidationForBookAndUser.*;
 public class UserManager {
     public static final Logger log = Logger.getLogger(String.valueOf(TestBookApp.class));
     static ResourceBundle bundle = ResourceBundle.getBundle("menu", Locale.CANADA_FRENCH);
-    static User userRegistration() throws EmailFormatException, DuplicateUserException {
+    public User userRegistration() throws EmailFormatException, DuplicateUserException {
         Scanner scanner = new Scanner(System.in);
         log.info(bundle.getString("email"));
         String emailAddress = scanner.next();
@@ -43,20 +43,22 @@ public class UserManager {
         return newUser(userid, name, lastName, mobile, userInformation, emailAddress, passwordRegister);
     }
 
-    public static User newUser(int userid, String name, String lastName, int mobile, String userInformation, String emailAddress, String passwordLogin) {
+    public  User newUser(int userid, String name, String lastName, int mobile, String userInformation, String emailAddress, String passwordLogin) {
         return new UserBuilder(userid,name,lastName,mobile,emailAddress,passwordLogin).bioData(userInformation).build();
     }
 
-    static User userLogin(String email , String password, Map<String, String> request, Map<String, User> users) throws WrongCredentialsException, UserNotFoundException {
-        User loggedUser = null;
-        for(User logged : users.values()) {
-            if (logged.getEmail().equals(email) && logged.getPassword().equals(password)) {
-                loggedUser = new User(new UserBuilder(logged.getUserId(),logged.getFirstName(),logged.getLastName(),logged.getMobileNumber(),logged.getEmail(),""));
+    public User userLogin(String email , String password, Map<String, String> request, Map<String, User> users) throws WrongCredentialsException, UserNotFoundException {
+        User loggedUser = users.get(email);
+        if(loggedUser != null) {
+            if (loggedUser.getEmail().equalsIgnoreCase(email) && loggedUser.getPassword().equalsIgnoreCase(password)) {
                 log.info(request.get(email));
             } else {
-                throw new WrongCredentialsException("wrong credentials");
+                throw new UserNotFoundException(" user not found");
             }
+        }else {
+            throw new WrongCredentialsException(" user not present with this email id");
         }
-        return loggedUser;
+        User myUser = new User(new UserBuilder(loggedUser.getUserId(),loggedUser.getFirstName(),loggedUser.getLastName(),loggedUser.getMobileNumber(),loggedUser.getEmail(), " " ));
+        return myUser;
     }
 }

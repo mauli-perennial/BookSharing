@@ -9,8 +9,6 @@ import model.User;
 
 import java.util.*;
 import java.util.logging.Logger;
-
-import static dummydata.BookOwner.getBookOwner;
 import static dummydata.BookSamples.dataBook;
 import static dummydata.BookSamples.sampleReadyBook;
 import static dummydata.UserSample.sampleReadyUser;
@@ -18,12 +16,13 @@ import static dummydata.UserSample.userData;
 
 public class UserDashboard {
     public static final Logger log = Logger.getLogger(String.valueOf(TestBookApp.class));
-    static ResourceBundle bundle = ResourceBundle.getBundle("menu", Locale.CANADA_FRENCH);
-    public static void userDashboardRun() throws DuplicateUserException {
+   public static final ResourceBundle bundle = ResourceBundle.getBundle("menu", Locale.CANADA_FRENCH);
 
+    public static void userDashboardRun() throws DuplicateUserException {
+        UserManager manager = new UserManager();
         boolean exit = false;
         Map<String, User> users = userData(sampleReadyUser());
-        Map<Integer, User> owner = getBookOwner();
+        Map<Integer, User> owner = new HashMap<>();
         Map<String, List<Book>> bookStore = dataBook(sampleReadyBook());
         Map<String, String> request = new HashMap<>();
         User userLogin;
@@ -43,7 +42,7 @@ public class UserDashboard {
                         log.info(bundle.getString("password"));
                         String password = scanner.next();
                         try {
-                            userLogin = UserManager.userLogin(userEmail,password,request,users);
+                            userLogin = manager.userLogin(userEmail,password,request,users);
                         } catch (Exception e) {
                             continue;
                         }
@@ -55,19 +54,12 @@ public class UserDashboard {
 
                         User registeredUser;
                         try {
-                            registeredUser = UserManager.userRegistration();
+                            registeredUser = manager.userRegistration();
                         }  catch (EmailFormatException e) {
                             throw new RuntimeException(e);
                         }
                         log.info(bundle.getString("success") + registeredUser.getUserId());
                         users.put(registeredUser.getEmail(), registeredUser);
-                        log.info("enter y");
-                        String decide = scanner.next();
-                        if (users.containsKey(registeredUser.getEmail()) && decide.equalsIgnoreCase("y")) {
-                                userLogin = users.get(registeredUser.getEmail());
-                                BookAppDashboard appReg = new BookAppDashboard();
-                                appReg.dashboard(userLogin, owner, request, bookStore);
-                        }
                         break;
 
                     case "E":

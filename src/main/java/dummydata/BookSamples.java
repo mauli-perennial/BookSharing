@@ -2,6 +2,7 @@ package dummydata;
 
 import model.Book;
 import model.BookStatus;
+import model.User;
 
 import java.util.*;
 
@@ -32,5 +33,5 @@ public class BookSamples {
         }
         return books;
     }
-
 }
+

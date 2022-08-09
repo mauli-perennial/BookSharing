@@ -14,15 +14,18 @@ public class BookAppDashboard {
     private static final String KEY = "key";
     private static final String BOOK = "book";
     public static final Logger log = Logger.getLogger(String.valueOf(TestBookApp.class));
-    static ResourceBundle bundle = ResourceBundle.getBundle("menu", Locale.CANADA_FRENCH);
-    public void dashboard(User user, Map<Integer, User> owners, Map<String, String> request, Map<String, List<Book>> bookStore) {
+    public static final ResourceBundle bundle = ResourceBundle.getBundle("menu", Locale.CANADA_FRENCH);
+    public static final BookOperation operation = new BookOperation();
+
+    public  void dashboard(User user, Map<Integer, User> owners, Map<String, String> request, Map<String, List<Book>> bookStore) {
         Map<Integer, User> bookShare = new HashMap<>();
         boolean logout = false;
         Scanner scanner = new Scanner(System.in);
         BookService service = new BookService();
+
         while (!logout) {
 
-            BookOperation.menu();
+            operation.menu();
 
             try {
 
@@ -31,7 +34,7 @@ public class BookAppDashboard {
                 switch (choice) {
                     case 1:
 
-                        BookOperation.addBook(bookStore, owners, user);
+                        operation.addBook(bookStore, owners, user);
 
 
                         break;
@@ -39,9 +42,9 @@ public class BookAppDashboard {
                         log.info(bundle.getString("bookName"));
                         String bookeyName = scanner.next();
                         List<Book> books = service.searchByValue(bookStore, bookeyName, BOOK);
-                        if(!books.isEmpty()) {
-                           log.info(books.toString());
-                        }else {
+                        if (!books.isEmpty()) {
+                            log.info(books.toString());
+                        } else {
                             throw new BookNotPresentException(" no books by this name");
                         }
 
@@ -50,7 +53,7 @@ public class BookAppDashboard {
 
                         log.info(bundle.getString("authorName"));
                         String authorName = scanner.next();
-                        List<Book> list = service.searchByValue(bookStore, authorName,AUTHOR);
+                        List<Book> list = service.searchByValue(bookStore, authorName, AUTHOR);
                         if (!list.isEmpty()) {
                             for (Book book : list) {
                                 log.info(book.toString());
@@ -64,7 +67,7 @@ public class BookAppDashboard {
 
                         log.info(bundle.getString("keyWord"));
                         String key = scanner.next();
-                        List<Book> byKeyResult = service.searchByValue(bookStore, key,KEY);
+                        List<Book> byKeyResult = service.searchByValue(bookStore, key, KEY);
                         if (!byKeyResult.isEmpty()) {
                             for (Book book : byKeyResult) {
                                 log.info(book.toString());
@@ -76,7 +79,7 @@ public class BookAppDashboard {
 
                     case 5:
 
-                        if (BookOperation.requestBook(user, owners, request, bookStore, bookShare)) {
+                        if (operation.requestBook(user, owners, request, bookStore, bookShare)) {
                             log.info(bundle.getString("requestSent"));
                         } else {
                             throw new BookNotPresentException(" no such books");
@@ -85,7 +88,7 @@ public class BookAppDashboard {
 
                     case 6:
 
-                        if (BookOperation.returnBook(request, bookStore, bookShare, owners, user)) {
+                        if (operation.returnBook(request, bookStore, bookShare, owners, user)) {
                             log.info(bundle.getString("returnMessage"));
                         } else {
                             throw new BookNotPresentException(" error in retrun");

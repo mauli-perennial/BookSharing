@@ -46,7 +46,6 @@ private static final String KEY = "key";
     }
 
 
-
      public String checkStatusToRequest(List<Book> books, int isbn) {
          String status = "";
          for (Book book : books) {

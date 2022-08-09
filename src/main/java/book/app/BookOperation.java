@@ -1,5 +1,6 @@
 package book.app;
 
+import book_user_validator.ValidationForBookAndUser;
 import exceptions.BooKNameException;
 import main.application.TestBookApp;
 import model.*;
@@ -9,20 +10,19 @@ import java.util.*;
 import java.util.logging.Logger;
 
 import static book_user_validator.ValidationForBookAndUser.convertDate;
-import static book_user_validator.ValidationForBookAndUser.validateBookName;
 
 public class BookOperation {
     private static final Scanner scanner = new Scanner(System.in);
     private static final Random random = new Random();
-    private BookOperation(){
-
-    }
     public static final Logger log = Logger.getLogger(String.valueOf(TestBookApp.class));
     static ResourceBundle bundle = ResourceBundle.getBundle("menu", Locale.CANADA_FRENCH);
-    static void addBook(Map<String, List<Book>> bookStore, Map<Integer, User> owners, User user) throws ParseException, BooKNameException {
+    public BookOperation(){
+
+    }
+    public  void addBook(Map<String, List<Book>> bookStore, Map<Integer, User> owners, User user) throws ParseException, BooKNameException {
         log.info(bundle.getString("bookName"));
         String name = scanner.next();
-        validateBookName(name);
+        ValidationForBookAndUser.validateBookName(name);
         int isbn = random.nextInt();
         log.info(bundle.getString("authorNumber"));
         int number = scanner.nextInt();
@@ -51,10 +51,10 @@ public class BookOperation {
 
 
 
-    static boolean requestBook(User user, Map<Integer, User> owners, Map<String, String> request, Map<String, List<Book>> bookStore, Map<Integer, User> bookShare) throws BooKNameException {
+    public boolean requestBook(User user, Map<Integer, User> owners, Map<String, String> request, Map<String, List<Book>> bookStore, Map<Integer, User> bookShare) throws BooKNameException {
         log.info(bundle.getString("bookName"));
         String bookName = scanner.next();
-        validateBookName(bookName);
+        ValidationForBookAndUser.validateBookName(bookName);
         BookService ser = new BookService();
         boolean isSuccess = false;
         if (bookStore.containsKey(bookName)) {
@@ -82,7 +82,7 @@ public class BookOperation {
 
 
 
-    static boolean returnBook(Map<String, String> request, Map<String, List<Book>> bookStore, Map<Integer, User> bookShare, Map<Integer, User> owners, User user) {
+    public boolean returnBook(Map<String, String> request, Map<String, List<Book>> bookStore, Map<Integer, User> bookShare, Map<Integer, User> owners, User user) {
         log.info(bundle.getString("bookName"));
         String select = scanner.next();
         BookService ser = new BookService();
@@ -103,7 +103,7 @@ public class BookOperation {
         return isSuccess;
     }
 
-    static void menu(){
+    public static void menu(){
         String  menu = String.format("Please choose the below Options %n %s %n %s %n %s %n %s %n %s %n %s %n %s", bundle.getString("add"),bundle.getString("info"),bundle.getString("authors"),bundle.getString("keys"),bundle.getString("request"),bundle.getString("returnBook"),bundle.getString("exits"));
         log.info(menu);
     }

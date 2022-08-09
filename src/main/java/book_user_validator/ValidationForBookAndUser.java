@@ -3,6 +3,7 @@ package book_user_validator;
 import exceptions.BooKNameException;
 import exceptions.EmailFormatException;
 import exceptions.DuplicateUserException;
+import exceptions.PasswordFormatException;
 import model.User;
 
 import java.text.ParseException;
@@ -31,17 +32,12 @@ public class ValidationForBookAndUser {
     private static final Pattern patternName = Pattern.compile(NAME);
     private static final Pattern emailPattern = Pattern.compile(EMAIL);
 
-    private ValidationForBookAndUser() {
-        System.out.println("Inside validations");
-    }
-
-
     public static Date convertDate(String date) throws ParseException {
         return sdf.parse(date);
     }
 
 
-    public static boolean validateBookName(String name) throws BooKNameException {
+     public static boolean validateBookName(String name) throws BooKNameException {
         boolean isValid = false;
         Matcher matcher = patternBook.matcher(name);
         if (matcher.matches()) {
@@ -53,19 +49,20 @@ public class ValidationForBookAndUser {
     }
 
 
-    public static boolean validateName(String name) {
+     private static void validateName(String name) throws BooKNameException {
         boolean isValid = false;
         Matcher matcher = patternName.matcher(name);
         if ((matcher.matches())) {
             isValid = true;
+        }else {
+            throw new BooKNameException(" wrong book name format");
         }
-        return isValid;
+
     }
 
 
-    public static void checkIfUserExist(String email) throws DuplicateUserException {
+     public static void checkIfUserExist(String email) throws DuplicateUserException {
         Map<String, User> users = userData(sampleReadyUser());
-        boolean isUserExists = false;
         for (User user : users.values()) {
             if (user.getEmail().equals(email)) {
                 throw new DuplicateUserException(" Duplicate user found");
@@ -74,13 +71,13 @@ public class ValidationForBookAndUser {
     }
 
 
-    public static boolean isValidEmailAddress(String email) {
+     private static boolean isValidEmailAddress(String email) {
       Matcher matcher = emailPattern.matcher(email);
         return matcher.matches();
     }
 
 
-    public static boolean isValid(String password) {
+    private static boolean isValid(String password) {
         Matcher matcher = pattern.matcher(password);
         return matcher.matches();
     }
@@ -93,9 +90,9 @@ public class ValidationForBookAndUser {
     }
 
 
-    private static void checkPassword(String password) throws DuplicateUserException {
+    public static void checkPassword(String password) throws PasswordFormatException {
         if (isValid(password)) {
-            throw new DuplicateUserException("password format wrong");
+            throw new PasswordFormatException("password format wrong");
         }
     }
 
