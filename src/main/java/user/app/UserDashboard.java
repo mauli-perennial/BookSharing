@@ -1,7 +1,6 @@
 package user.app;
 
 import book.app.BookAppDashboard;
-import exceptions.EmailFormatException;
 import exceptions.DuplicateUserException;
 import main.application.TestBookApp;
 import model.Book;
@@ -9,6 +8,7 @@ import model.User;
 
 import java.util.*;
 import java.util.logging.Logger;
+
 import static dummydata.BookSamples.dataBook;
 import static dummydata.BookSamples.sampleReadyBook;
 import static dummydata.UserSample.sampleReadyUser;
@@ -16,7 +16,7 @@ import static dummydata.UserSample.userData;
 
 public class UserDashboard {
     public static final Logger log = Logger.getLogger(String.valueOf(TestBookApp.class));
-   public static final ResourceBundle bundle = ResourceBundle.getBundle("menu", Locale.CANADA_FRENCH);
+    public static final ResourceBundle bundle = ResourceBundle.getBundle("menu", Locale.CANADA_FRENCH);
 
     public static void userDashboardRun() throws DuplicateUserException {
         UserManager manager = new UserManager();
@@ -30,19 +30,19 @@ public class UserDashboard {
 
             while (!exit) {
                 log.info("Please Choose the following options given below");
-                String menu = String.format("%s %n %s %n %s " , bundle.getString("login"),bundle.getString("register"),bundle.getString("logout"));
+                String menu = String.format("%s %n %s %n %s ", bundle.getString("login"), bundle.getString("register"), bundle.getString("logout"));
                 log.info(menu);
                 String option = scanner.next();
 
                 switch (option) {
 
                     case "L":
-                       log.info(bundle.getString("email"));
+                        log.info(bundle.getString("email"));
                         String userEmail = scanner.next();
                         log.info(bundle.getString("password"));
                         String password = scanner.next();
                         try {
-                            userLogin = manager.userLogin(userEmail,password,request,users);
+                            userLogin = manager.userLogin(userEmail, password, request, users);
                         } catch (Exception e) {
                             continue;
                         }
@@ -55,8 +55,8 @@ public class UserDashboard {
                         User registeredUser;
                         try {
                             registeredUser = manager.userRegistration();
-                        }  catch (EmailFormatException e) {
-                            throw new RuntimeException(e);
+                        } catch (Exception e) {
+                            continue;
                         }
                         log.info(bundle.getString("success") + registeredUser.getUserId());
                         users.put(registeredUser.getEmail(), registeredUser);

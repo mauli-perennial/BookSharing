@@ -37,9 +37,9 @@ private static final String KEY = "key";
         for (Book book : booksByName) {
             if (book.getIsbn() == isbn) {
                 if (status.equals(BookStatus.TAKEN.getName())) {
-                    book.setStatus(status);
+                    book.setTaken();
                 } else {
-                    book.setStatus(BookStatus.AVAILABLE.getName());
+                    book.setAvailable();
                 }
             }
         }

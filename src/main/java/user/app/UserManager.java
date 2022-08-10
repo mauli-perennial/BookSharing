@@ -30,6 +30,7 @@ public class UserManager {
         }
         log.info("Enter the password ");
         String passwordRegister = scanner.next();
+
         Random random = new Random();
         int userid = random.nextInt();
         log.info(bundle.getString("firstName"));

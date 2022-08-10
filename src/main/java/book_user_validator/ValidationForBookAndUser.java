@@ -37,27 +37,19 @@ public class ValidationForBookAndUser {
     }
 
 
-     public static boolean validateBookName(String name) throws BooKNameException {
-        boolean isValid = false;
+     public static void validateBookName(String name) throws BooKNameException {
         Matcher matcher = patternBook.matcher(name);
-        if (matcher.matches()) {
-            isValid = true;
-        }else {
+        if (!matcher.matches()) {
             throw new BooKNameException("Invalid book name format");
         }
-        return isValid;
     }
 
 
      private static void validateName(String name) throws BooKNameException {
-        boolean isValid = false;
         Matcher matcher = patternName.matcher(name);
-        if ((matcher.matches())) {
-            isValid = true;
-        }else {
+        if (matcher.matches()) {
             throw new BooKNameException(" wrong book name format");
         }
-
     }
 
 

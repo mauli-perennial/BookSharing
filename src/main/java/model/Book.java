@@ -59,13 +59,11 @@ public class Book {
         return status;
     }
 
-    public void setStatus(String status) {
-        if(status.equalsIgnoreCase(BookStatus.AVAILABLE.getName())){
-            this.status = BookStatus.AVAILABLE.getName();
-        }else {
-            this.status = BookStatus.TAKEN.getName();
-        }
-
+    public void setAvailable() {
+       status = BookStatus.AVAILABLE.getName();
+    }
+    public void setTaken(){
+        status = BookStatus.TAKEN.getName();
     }
 
     @Override
